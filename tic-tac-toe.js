@@ -26,7 +26,7 @@ window.addEventListener('DOMContentLoaded', (event) => {
 
   })
 
-let string - s
+
 
 
 
