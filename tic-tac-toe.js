@@ -1,10 +1,41 @@
 let currentPlayerSymbol = 'x'
-const squareValues = ['', '', '', '', '', '', '', '', ''];
+
+
+let gameHeader = document.getElementById('game-status');
+let newGameButton = document.getElementById('new-game');
+let giveUpButton = document.getElementById('give-up');
+let squareValues = ['', '', '', '', '', '', '', '', ''];
 
 let gameStatus = '';
 
 
+
+
 window.addEventListener('DOMContentLoaded', (event) => {
+
+
+  if (localStorage.length) {
+    getSquareValues = localStorage.getItem('tic-tac-toe-state')
+    let parsedSquareValues = JSON.parse(getSquareValues)
+    squareValues = parsedSquareValues;
+
+    // loop through the squarevalues array
+    for (let i = 0; i < squareValues.length; i++) {
+      // grab square based on i
+      let square = document.getElementById(`square-${i}`)
+      // create img element
+      let img = document.createElement('img')
+      // set a conditional to set image src to either X img or O img
+      if (squareValues[i] === 'x') {
+        img.src = 'https://assets.aaonline.io/Module-DOM-API/formative-project-tic-tac-toe/player-x.svg'
+      } else if (squareValues[i] === 'o') {
+        img.src = 'https://assets.aaonline.io/Module-DOM-API/formative-project-tic-tac-toe/player-o.svg'
+      }
+      // append img to square based on i
+      square.appendChild(img)
+    }
+  }
+
 
   const checkGameStatus = () => {
     if (squareValues[0] === squareValues[1] && squareValues[1] === squareValues[2] && squareValues[2] !== '') {
@@ -16,15 +47,15 @@ window.addEventListener('DOMContentLoaded', (event) => {
       gameStatus = currentPlayerSymbol.toUpperCase();
     }
     if (squareValues[6] === squareValues[7] && squareValues[7] === squareValues[8] && squareValues[8] !== '') {
-     //bottom
+      //bottom
       gameStatus = currentPlayerSymbol.toUpperCase();
     }
     if (squareValues[0] === squareValues[3] && squareValues[3] === squareValues[6] && squareValues[6] !== '') {
-         //left column
+      //left column
       gameStatus = currentPlayerSymbol.toUpperCase();
     }
     if (squareValues[1] === squareValues[4] && squareValues[4] === squareValues[7] && squareValues[7] !== '') {
-        //middle column
+      //middle column
       gameStatus = currentPlayerSymbol.toUpperCase();
     }
     if (squareValues[2] === squareValues[5] && squareValues[5] === squareValues[8] && squareValues[8] !== '') {
@@ -36,7 +67,7 @@ window.addEventListener('DOMContentLoaded', (event) => {
       gameStatus = currentPlayerSymbol.toUpperCase();
     }
     if (squareValues[2] === squareValues[4] && squareValues[4] === squareValues[6] && squareValues[6] !== '') {
-          //diagonal 2
+      //diagonal 2
       gameStatus = currentPlayerSymbol.toUpperCase();
     }
 
@@ -47,15 +78,14 @@ window.addEventListener('DOMContentLoaded', (event) => {
     }
 
     if (gameStatus !== '') {
-      document.getElementById('game-status').innerHTML = `Winner: ${gameStatus}`
-
+      gameHeader.innerHTML = `Winner: ${gameStatus}`
+      newGameButton.disabled = false;
+      // giveUpButton.setAttribute('disabled', 'true');
+      giveUpButton.disabled = true;
     }
+  }
 
 
-
-
-
-}
 
 
   let board = document.getElementById('tic-tac-toe-board');
@@ -96,16 +126,49 @@ window.addEventListener('DOMContentLoaded', (event) => {
       currentPlayerSymbol = 'x';
     }
 
+    saveGameState();
+  })
 
 
+  newGameButton.addEventListener('click', event => {
+    currentPlayerSymbol = 'x';
+    squareValues = ['', '', '', '', '', '', '', '', ''];
+    gameStatus = '';
+    gameHeader.innerHTML = '';
+
+    for (let i = 0; i <= 8; i++) {
+      let square = document.getElementById(`square-${i}`)
+      square.innerHTML = '';
+    }
+    newGameButton.disabled = true;
+    giveUpButton.disabled = false;
+  })
+
+  giveUpButton.addEventListener('click', event => {
+    if (currentPlayerSymbol === 'x') {
+      gameStatus = 'O'
+    } else if (currentPlayerSymbol === 'o') {
+      gameStatus = 'X'
+    }
+
+    gameHeader.innerHTML = `Winner: ${gameStatus}`
+    newGameButton.disabled = false;
+    giveUpButton.disabled = true;
 
   })
 
 
+  function saveGameState() {
+    // get current state of game (squareArray)
+    // set current state into local storage
+    // change game into saved state from local storage
 
-
-
-
+    let serializedSquareValues = JSON.stringify(squareValues);
+    localStorage.setItem('tic-tac-toe-state', serializedSquareValues)
+    // let getSquareValues = localStorage.getItem('tic-tac-toe-state')
+    // let parsedSquareValues = JSON.parse(getSquareValues)
+    // squareValues = parsedSquareValues;
+  }
 
 
 })
